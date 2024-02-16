@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/firebase-react-note-app/static/css/main.411e19aa.css",
+    "main.js": "/firebase-react-note-app/static/js/main.abb986ae.js",
+    "index.html": "/firebase-react-note-app/index.html",
+    "main.411e19aa.css.map": "/firebase-react-note-app/static/css/main.411e19aa.css.map",
+    "main.abb986ae.js.map": "/firebase-react-note-app/static/js/main.abb986ae.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.411e19aa.css",
+    "static/js/main.abb986ae.js"
+  ]
+}
