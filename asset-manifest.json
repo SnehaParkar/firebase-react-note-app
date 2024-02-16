@@ -1,13 +1,15 @@
 {
   "files": {
-    "main.css": "/firebase-react-note-app/static/css/main.411e19aa.css",
-    "main.js": "/firebase-react-note-app/static/js/main.abb986ae.js",
+    "main.css": "/firebase-react-note-app/static/css/main.a5b97aac.chunk.css",
+    "main.js": "/firebase-react-note-app/static/js/main.2a88c702.chunk.js",
+    "main.js.map": "/firebase-react-note-app/static/js/main.2a88c702.chunk.js.map",
+    "runtime~main.js": "/firebase-react-note-app/static/js/runtime~main.eddd39b8.js",
+    "runtime~main.js.map": "/firebase-react-note-app/static/js/runtime~main.eddd39b8.js.map",
+    "static/js/2.01c54076.chunk.js": "/firebase-react-note-app/static/js/2.01c54076.chunk.js",
+    "static/js/2.01c54076.chunk.js.map": "/firebase-react-note-app/static/js/2.01c54076.chunk.js.map",
     "index.html": "/firebase-react-note-app/index.html",
-    "main.411e19aa.css.map": "/firebase-react-note-app/static/css/main.411e19aa.css.map",
-    "main.abb986ae.js.map": "/firebase-react-note-app/static/js/main.abb986ae.js.map"
-  },
-  "entrypoints": [
-    "static/css/main.411e19aa.css",
-    "static/js/main.abb986ae.js"
-  ]
+    "precache-manifest.01d7d09eeb7e567989eb1682922cce5e.js": "/firebase-react-note-app/precache-manifest.01d7d09eeb7e567989eb1682922cce5e.js",
+    "service-worker.js": "/firebase-react-note-app/service-worker.js",
+    "static/css/main.a5b97aac.chunk.css.map": "/firebase-react-note-app/static/css/main.a5b97aac.chunk.css.map"
+  }
 }
