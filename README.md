@@ -4,10 +4,10 @@ This is a solution to the [Notes App project on Scrimba](https://scrimba.com/lea
 
 ### Requirements
 
-- Sync notes with localStorage
-- Add note summary titles
-- Move modified notes to the top of the list
-- Delete notes
+- Firebase Code setup
+- Add, update delete note from firestore collection
+- Sort notes 
+- Debouncing - Delayed update in collection.
 
 ### Screenshot
 <img src="src/images/screenshot1.png" width="70%"/>
