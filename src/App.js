@@ -3,78 +3,87 @@ import './App.css';
 import React from "react"
 import Sidebar from "./components/Sidebar"
 import Editor from "./components/Editor"
-// import { data } from "./data"
+import Footer from './components/Footer';
 import Split from "react-split"
-import { nanoid } from "nanoid"
-
-/**
- * Challenge: Spend 10-20+ minutes reading through the code
- * and trying to understand how it's currently working. Spend
- * as much time as you need to feel confident that you 
- * understand the existing code (although you don't need
- * to fully understand everything to move on)
- */
+import { onSnapshot, addDoc, doc, deleteDoc, setDoc } from "firebase/firestore"
+import { notesCollection, db } from './firebase';
 
 export default function App() {
 
-  const [notes, setNotes] = React.useState(
-    () => JSON.parse(localStorage.getItem("notes")) || [])
+  const [notes, setNotes] = React.useState([])
+  const [currentNoteId, setCurrentNoteId] = React.useState("")
+  const [tempNoteText, setTempNoteText] = React.useState("")
 
-  const [currentNoteId, setCurrentNoteId] = React.useState(() => {
-    //console.log("set currentNote Id", notes[0].id);
-    return (notes[0] && notes[0].id) || ""
-  })
+  const currentNote =
+    notes.find(note => note.id === currentNoteId)
+    || notes[0]
+
+  const sortedNotes = notes.sort((a, b) => b.updatedAt - a.updatedAt)
 
   React.useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes));
-  }, [notes]);
+    // this is basically web-socket connection for firestore collection
+    const unsubscribe = onSnapshot(notesCollection, (snapshot) => {
+      // Sync up our local notes array with the snapshot data
+      // console.log("THINGS ARE CHANGING!", snapshot);
+      const notesArr = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      }))
+      setNotes(notesArr);
 
-
-  function createNewNote() {
-    const newNote = {
-      id: nanoid(),
-      body: "# Type your markdown note's title here"
-    }
-    setNotes(prevNotes => [newNote, ...prevNotes])
-    setCurrentNoteId(newNote.id)
-
-  }
-
-  function updateNote(text) {
-    // this doesnt not re-arrange 
-    // setNotes(oldNotes => oldNotes.map(oldNote => {
-    //   return oldNote.id === currentNoteId
-    //     ? { ...oldNote, body: text }
-    //     : oldNote
-    // }))
-
-    // Put the most recently-modified note at the top
-    setNotes(oldNotes => {
-      const newArray = []
-      for (let i = 0; i < oldNotes.length; i++) {
-        const oldNote = oldNotes[i]
-        if (oldNote.id === currentNoteId) {
-          newArray.unshift({ ...oldNote, body: text })
-        } else {
-          newArray.push(oldNote)
-        }
-      }
-      return newArray
     })
+    return unsubscribe
+  }, []);
+
+  React.useEffect(() => {
+    if (!currentNoteId) {
+      setCurrentNoteId(notes[0]?.id)
+    }
+  }, [notes])
+
+  React.useEffect(() => {
+    if (currentNote) {
+      setTempNoteText(currentNote.body)
+    }
+  }, [currentNote])
+
+  // debouncing logic , make delay in seding req. and wait for user to type more text.
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (tempNoteText !== currentNote?.body)
+        updateNote(tempNoteText)
+    }, 500)
+    return () => clearTimeout(timeoutId);
+  }, [tempNoteText])
+
+  // CREATE / UPDATE/ DELETE
+  async function createNewNote() {
+    const newNote = {
+      body: "# Type your markdown note's title here",
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    }
+    const newNoteRef = await addDoc(notesCollection, newNote)
+    //setNotes(prevNotes => [newNote, ...prevNotes])
+    setCurrentNoteId(newNoteRef.id)
+
   }
 
-  function findCurrentNote() {
-    return notes.find(note => {
-      return note.id === currentNoteId
-    }) || notes[0]
+  async function updateNote(text) {
+    const toBeUpdatedNote = doc(db, "notes", currentNoteId);
+    await setDoc(toBeUpdatedNote,
+      {
+        body: text,
+        updatedAt: Date.now()
+      },
+      { merge: true });
   }
 
-  function deleteNote(event, noteId) {
-    event.stopPropagation();
-    setNotes(oldNotes => oldNotes.filter(oldNote => {
-      return oldNote.id !== noteId
-    }))
+  async function deleteNote(noteId) {
+    const toBeDeletedNote = doc(db, "notes", noteId);
+    await deleteDoc(toBeDeletedNote);
   }
+
   return (
     <main>
       {
@@ -86,33 +95,26 @@ export default function App() {
             className="split"
           >
             <Sidebar
-              notes={notes}
+              notes={sortedNotes}
               deleteNote={deleteNote}
-              currentNote={findCurrentNote()}
+              currentNote={currentNote}
               setCurrentNoteId={setCurrentNoteId}
               newNote={createNewNote}
             />
-            {
-              currentNoteId &&
-              notes.length > 0 &&
-              <Editor
-                currentNote={findCurrentNote()}
-                updateNote={updateNote}
-              />
-            }
+            <Editor
+              tempNoteText={tempNoteText}
+              setTempNoteText={setTempNoteText}
+            />
+
           </Split>
           :
           <div className="no-notes">
             <h1>You have no notes</h1>
-            <button
-              className="first-note"
-              onClick={createNewNote}
-            >
-              Create one now
-            </button>
+            <button className="first-note" onClick={createNewNote}>Create one now</button>
           </div>
 
       }
-    </main>
+      <Footer />
+    </main >
   )
 }

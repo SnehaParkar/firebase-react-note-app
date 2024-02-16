@@ -262,18 +262,27 @@ button:focus {
 /* FOOTER */
 
 footer {
-  padding: 2em 0;
+  padding: 5px 0;
   margin-bottom: 0;
-  background-color: var(--clr-accent);
+  background-color: #eee;
+  border-top: 1px solid #ccc;
+  color: #000;
   text-align: center;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  z-index: 2;
 }
 
 small a {
   font-weight: bold;
-  color: black;
+  color: #000;
   text-decoration: none;
 }
 
+/*
+
+*/
 .mde-header {
   background: var(--clr-primary-color);
   padding: 5px 20px;
